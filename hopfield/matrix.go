@@ -4,7 +4,7 @@ type Matrix struct {
 	Matrix [][]int
 }
 
-// Init matrix by input matrix "inM"
+// Init matrix by ideal matrix "inM"
 func (m *Matrix) Init(inM [][]int)  {
 	colS := len(inM)
 	for i := 0; i < colS; i++ {
@@ -13,7 +13,7 @@ func (m *Matrix) Init(inM [][]int)  {
 }
 
 // Transpose matrix
-func (m *Matrix) Transpose()  {
+func (m *Matrix) Transpose() *Matrix {
 	newMatrix := new(Matrix)
 	newMatrix.Matrix = make([][]int, len(m.Matrix[0]))
 	rSize := len(m.Matrix)
@@ -22,18 +22,17 @@ func (m *Matrix) Transpose()  {
 	for i := 0; i < len(m.Matrix[0]); i++ {
 		newMatrix.Matrix[i] = make([]int, rSize)
 	}
-
 	for i := 0; i < rSize; i++ {
 
 		for j := 0; j < cSize; j++ {
 			newMatrix.Matrix[j][i] = m.Matrix[i][j]
 		}
 	}
-	m.Matrix = newMatrix.Matrix
+	return newMatrix
 }
 
 // Multiply 2 matrix
-func (m *Matrix) Mult(mt *Matrix){
+func (m *Matrix) MultByMatrix(mt *Matrix) *Matrix{
 
 	resMatrix := new(Matrix)
 
@@ -55,8 +54,16 @@ func (m *Matrix) Mult(mt *Matrix){
 		}
 	}
 
+	return resMatrix
+}
 
-	m.Matrix = resMatrix.Matrix
-
+// Multiply matrix by vector
+func (m *Matrix) MultByVector(vec []int) []int {
+	vector := make([][]int, 1)
+	vector[0] = vec
+	vecMatrix := new(Matrix)
+	vecMatrix.Matrix = vector
+	vecMatrix = vecMatrix.Transpose()
+	return m.MultByMatrix(vecMatrix).Transpose().Matrix[0]
 
 }
