@@ -5,7 +5,7 @@ type Matrix struct {
 }
 
 // Init matrix by ideal matrix "inM"
-func (m *Matrix) Init(inM [][]int)  {
+func (m *Matrix) Init(inM [][]int) {
 	colS := len(inM)
 	for i := 0; i < colS; i++ {
 		m.Matrix = append(m.Matrix, inM[i])
@@ -32,22 +32,22 @@ func (m *Matrix) Transpose() *Matrix {
 }
 
 // Multiply 2 matrix
-func (m *Matrix) MultByMatrix(mt *Matrix) *Matrix{
+func (m *Matrix) MultByMatrix(mt *Matrix) *Matrix {
 
 	resMatrix := new(Matrix)
 
 	resMatrix.Matrix = make([][]int, len(m.Matrix))
 
-	for i := 0; i < len(resMatrix.Matrix) ; i ++ {
+	for i := 0; i < len(resMatrix.Matrix); i ++ {
 		resMatrix.Matrix[i] = make([]int, len(mt.Matrix[0]))
 	}
 
-	for i := 0; i < len(resMatrix.Matrix) ; i++ {
+	for i := 0; i < len(resMatrix.Matrix); i++ {
 
-		for j := 0; j < len(mt.Matrix[0]); j ++{
+		for j := 0; j < len(mt.Matrix[0]); j ++ {
 			sum := 0
 
-			for k := 0; k < len(mt.Matrix); k ++{
+			for k := 0; k < len(mt.Matrix); k ++ {
 				sum += m.Matrix[i][k] * mt.Matrix[k][j]
 			}
 			resMatrix.Matrix[i][j] = sum

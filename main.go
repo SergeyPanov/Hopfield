@@ -48,8 +48,4 @@ func main() {
 		net.Restore(demmaged[i])
 	}
 
-
-
-
-
 }

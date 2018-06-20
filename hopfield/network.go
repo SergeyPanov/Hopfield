@@ -5,13 +5,13 @@ import (
 )
 
 type Network struct {
-	Ideal Matrix
-	Weights Matrix
+	Ideal         Matrix
+	Weights       Matrix
 	Input, Output []int
-	Threshold float64
+	Threshold     float64
 }
 
-func (net *Network) Setup(images [][]int)  {
+func (net *Network) Setup(images [][]int) {
 
 	// Store ideal images
 	net.Ideal = Matrix{}
@@ -22,9 +22,9 @@ func (net *Network) Setup(images [][]int)  {
 	net.Weights.Init(images)
 	net.Weights = *net.Weights.Transpose()
 	net.Weights = *net.Weights.MultByMatrix(&net.Ideal)
-	for i := 0; i < len(net.Weights.Matrix) ; i ++ {
+	for i := 0; i < len(net.Weights.Matrix); i ++ {
 
-		for j := 0; j < len(net.Weights.Matrix[0]);j ++  {
+		for j := 0; j < len(net.Weights.Matrix[0]); j ++ {
 			if i == j {
 				net.Weights.Matrix[i][j] = 0
 			}
@@ -37,10 +37,10 @@ func (net *Network) Setup(images [][]int)  {
 
 // Activation function
 func (net *Network) activation(states []int) []int {
-	for i := 0; i < len(states) ; i++  {
+	for i := 0; i < len(states); i++ {
 		if states[i] <= int(net.Threshold) {
 			states[i] = -1
-		}else {
+		} else {
 			states[i] = 1
 		}
 	}
@@ -50,27 +50,29 @@ func (net *Network) activation(states []int) []int {
 // Zero distance condition
 func (net *Network) distance(prev, states []int) float64 {
 	eulerDistance := 0
-	for i := 0; i < len(states) ; i ++ {
-		eulerDistance += (states[i] - prev[i])*(states[i] - prev[i])
+	for i := 0; i < len(states); i ++ {
+		eulerDistance += (states[i] - prev[i]) * (states[i] - prev[i])
 	}
 	return float64(eulerDistance)
 
 }
 
-func (net *Network) Restore(input []int)  {
+func (net *Network) Restore(input []int) {
 	// First iteration Input == Output
 	net.Output = input
 
 	iteration := 0
 
-
-	outputs := make([][]int, 4)
-
+	output_2 := make([]int, len(input))
+	output_3 := make([]int, len(input))
 
 	for true {
-		outputs[iteration % 4] = net.Output
-
 		states := net.Weights.MultByVector(net.Output)
+		if iteration%2 == 0 {
+			output_3 = net.Output
+		} else {
+			output_2 = net.Output
+		}
 
 		net.Input = net.Output
 		net.Output = net.activation(states)
@@ -79,17 +81,14 @@ func (net *Network) Restore(input []int)  {
 			break
 		}
 
-		if iteration > 2 && net.distance(outputs[3], outputs[1]) == 0 && net.distance(outputs[2], outputs[0]) == 0 {
-			fmt.Println("Stop by altration")
+		if net.distance(net.Output, output_2) == 0 && net.distance(net.Input, output_3) == 0 {
+			fmt.Println("Image was not restored. Stop by altration.")
 			break
 		}
-
 		iteration += 1
-
 
 	}
 
 	fmt.Println(net.Output)
 
-	
 }
