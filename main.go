@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"os"
 	"Hopfield/hopfield"
+	"flag"
 )
 
 func readContent(path string) [][]int {
@@ -37,15 +38,18 @@ func readContent(path string) [][]int {
 }
 
 func main() {
-	const input = "/Users/sergeypanov/go/src/Hopfield/resources/ideal"
+
+	ideal := flag.String("ideal", "", "Path to file with ideal vectors.")
+	input := flag.String("input", "", "Path to file with input damaged files")
+	flag.Parse()
 
 	net := new(hopfield.Network)
-	net.Setup(readContent(input))
+	net.Setup(readContent(*ideal))
 
-	demmaged := readContent("/Users/sergeypanov/go/src/Hopfield/resources/input")
+	damaged := readContent(*input)
 
-	for i := 0; i < len(demmaged); i++ {
-		net.Restore(demmaged[i])
+	for i := 0; i < len(damaged); i++ {
+		net.Restore(damaged[i])
 	}
 
 }
